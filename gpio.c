@@ -1,6 +1,32 @@
 #include "gpio.h"
 
 
+void button_init(void) {
+
+    EALLOW;
+    GpioCtrlRegs.GPAPUD.bit.BUTTON      = 0;   // Disable pullup on button pin
+    GpioCtrlRegs.GPAMUX1.bit.BUTTON     = 0;   // Button pin = IO
+    GpioCtrlRegs.GPADIR.bit.BUTTON      = 0;   // GPIO12 = input
+    GpioCtrlRegs.GPAPUD.bit.BUTTON      = 1;   // Pull up disabled
+    EDIS;
+
+}
+
+void ext_int_init(void) {
+
+    EALLOW;
+    GpioCtrlRegs.GPAPUD.bit.GPIO12          = 1;    // Pull up disable
+    GpioCtrlRegs.GPAMUX1.bit.GPIO12         = 0;    // GPIO
+    GpioCtrlRegs.GPADIR.bit.GPIO12          = 0;    // input
+    GpioCtrlRegs.GPAQSEL1.bit.GPIO12        = 0;    // XINT1 Synch to SYSCLKOUT only
+    GpioCtrlRegs.GPACTRL.bit.QUALPRD0       = 0x00; // Each sampling window is 510*SYSCLKOUT
+    GpioIntRegs.GPIOXINT1SEL.bit.GPIOSEL    = 12;   // XINT1 is GPIO12
+    XIntruptRegs.XINT1CR.bit.POLARITY       = 11;   // Falling edge interrupt
+    XIntruptRegs.XINT1CR.bit.ENABLE         = 1;    // Enable XINT1
+    EDIS;
+
+}
+
 void gpio_select(void) {
 
     EALLOW;

@@ -12,8 +12,7 @@
 #include "gpio.h"
 #include "spi.h"
 
-__interrupt void spiTxFifoIsr(void);
-__interrupt void spiRxFifoIsr(void);
+__interrupt void hall_a_xint1_isr(void);
 
 void delay_loop(void);
 void error();
@@ -21,7 +20,7 @@ void error();
 uint16_t tx_data = 0;
 uint16_t rx_data = 0;
 
-
+uint16_t pin_state = 0;
 
 void main(void) {
 
@@ -61,36 +60,50 @@ void main(void) {
    InitPieVectTable();
 
 
+    EALLOW;
+    PieVectTable.XINT1 = &hall_a_xint1_isr;     // Re-mapping the ISR to xint1_isr
+    EDIS;
 
+    PieCtrlRegs.PIECTRL.bit.ENPIE = 1;          // Enable the PIE block
+    PieCtrlRegs.PIEIER1.bit.INTx4 = 1;          // Enable PIE Group 1 interrupt 4 ~ XINT1
+    IER |= M_INT1;                              // Enable CPU INT1
+    EINT;
 
+    button_init();
 
-    spia_io_init();
-    spia_init();
+    ext_int_init();
+
     gpio_select();
 
     while(1) {
 
-       //gpio_select();
-       //spia_tx(tx_data);
-       led_rider();
-       //gpio_example();
-       DELAY_US(100000);
-       spia_tx(tx_data);
-       //rx_data = spia_rx();
-       tx_data++;
+        if (GpioDataRegs.GPADAT.bit.BUTTON) {
+//            GpioDataRegs.GPASET.bit.LED0    = 1;
+//            GpioDataRegs.GPASET.bit.LED1    = 1;
+//            GpioDataRegs.GPASET.bit.LED2    = 1;
+//            GpioDataRegs.GPASET.bit.LED3    = 1;
+            //gpio_select();
+            //spia_tx(tx_data);
+            led_rider();
+            //gpio_example();
+            DELAY_US(50000);
+            //spia_tx(tx_data);
+            //rx_data = spia_rx();
+            //tx_data++;
+        }
+//        else {
+//            GpioDataRegs.GPACLEAR.bit.LED0  = 1;
+//            GpioDataRegs.GPACLEAR.bit.LED1  = 1;
+//            GpioDataRegs.GPACLEAR.bit.LED2  = 1;
+//            GpioDataRegs.GPACLEAR.bit.LED3  = 1;
+//        }
+
     }
 
 }
 
 
-void error(void)
-{
-    __asm("     ESTOP0");    //Test failed!! Stop!
-    for (;;);
+__interrupt void hall_a_xint1_isr(void) {
+
+    PieCtrlRegs.PIEACK.all = PIEACK_GROUP1; // Acknowledge this interrupt to get more from group 1
 }
-
-
-//===========================================================================
-// No more.
-//===========================================================================
-

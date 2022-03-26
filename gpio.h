@@ -15,14 +15,17 @@
 #define LED2    GPIO2
 #define LED3    GPIO3
 
+#define BUTTON  GPIO12
+
 #define DELAY   10
 #define MY_DEL  for (i = 0; i<0; i++)    __asm("     NOP");
-#define MIN_DELAY   1000
+#define MIN_DELAY   1
 
-
+void button_init(void);
 void gpio_select(void);
 void gpio_example(void);
 void led_rider(void);
+void ext_int_init(void);
 
 enum dir {left = 0, right = 1};
 
