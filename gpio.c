@@ -19,7 +19,7 @@ void ext_int_init(void) {
     GpioCtrlRegs.GPAMUX1.bit.GPIO12         = 0;    // GPIO
     GpioCtrlRegs.GPADIR.bit.GPIO12          = 0;    // input
     GpioCtrlRegs.GPAQSEL1.bit.GPIO12        = 0;    // XINT1 Synch to SYSCLKOUT only
-    GpioCtrlRegs.GPACTRL.bit.QUALPRD0       = 0x00; // Each sampling window is 510*SYSCLKOUT
+    GpioCtrlRegs.GPACTRL.bit.QUALPRD0       = 0x00; // Each sampling window is SYSCLKOUT
     GpioIntRegs.GPIOXINT1SEL.bit.GPIOSEL    = 12;   // XINT1 is GPIO12
     XIntruptRegs.XINT1CR.bit.POLARITY       = 11;   // Falling edge interrupt
     XIntruptRegs.XINT1CR.bit.ENABLE         = 1;    // Enable XINT1
