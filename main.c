@@ -80,7 +80,8 @@ void main(void) {
 
     ext_int_init();
 
-    gpio_select();
+    gpio_gate_drivers();
+    //gpio_select();
 
     GpioDataRegs.GPASET.bit.LED0    = 1;
     GpioDataRegs.GPASET.bit.LED1    = 1;

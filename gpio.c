@@ -52,6 +52,42 @@ void ext_int_init(void) {
 
 }
 
+void gpio_gate_drivers(void){
+
+    EALLOW;
+    GpioCtrlRegs.GPAPUD.bit.INHA_EPWM1A = 0;    // Disable pullup on GPIO0
+    GpioCtrlRegs.GPAPUD.bit.INLA_EPWM1B = 0;    // Disable pullup on GPIO0
+    GpioCtrlRegs.GPAPUD.bit.INHB_EPWM2A = 0;    // Disable pullup on GPIO0
+    GpioCtrlRegs.GPAPUD.bit.INLB_EPWM2B = 0;    // Disable pullup on GPIO0
+    GpioCtrlRegs.GPAPUD.bit.INHC_EPWM3A = 0;    // Disable pullup on GPIO0
+    GpioCtrlRegs.GPAPUD.bit.INLC_EPWM3B = 0;    // Disable pullup on GPIO0
+
+    GpioCtrlRegs.GPAMUX1.bit.INHA_EPWM1A = 0;  // GPIO0 = GPIO0
+    GpioCtrlRegs.GPAMUX1.bit.INLA_EPWM1B = 0;  // GPIO1 = GPIO1
+    GpioCtrlRegs.GPAMUX1.bit.INHB_EPWM2A = 0;  // GPIO2 = GPIO2
+    GpioCtrlRegs.GPAMUX1.bit.INLB_EPWM2B = 0;  // GPIO3 = GPIO3
+    GpioCtrlRegs.GPAMUX1.bit.INHC_EPWM3A = 0;  // GPIO4 = GPIO4
+    GpioCtrlRegs.GPAMUX1.bit.INLC_EPWM3B = 0;  // GPIO5 = GPIO5
+
+    GpioCtrlRegs.GPADIR.bit.INHA_EPWM1A = 1;   // GPIO0 = output
+    GpioCtrlRegs.GPADIR.bit.INLA_EPWM1B = 1;   // GPIO1 = output
+    GpioCtrlRegs.GPADIR.bit.INHB_EPWM2A = 1;   // GPIO2 = output
+    GpioCtrlRegs.GPADIR.bit.INLB_EPWM2B = 1;   // GPIO3 = output
+    GpioCtrlRegs.GPADIR.bit.INHC_EPWM3A = 1;   // GPIO4 = output
+    GpioCtrlRegs.GPADIR.bit.INLC_EPWM3B = 1;   // GPIO5 = output
+
+    GpioDataRegs.GPACLEAR.bit.INHA_EPWM1A = 1;
+    GpioDataRegs.GPACLEAR.bit.INLA_EPWM1B = 1;
+    GpioDataRegs.GPACLEAR.bit.INHB_EPWM2A = 1;
+    GpioDataRegs.GPACLEAR.bit.INLB_EPWM2B = 1;
+    GpioDataRegs.GPACLEAR.bit.INHC_EPWM3A = 1;
+    GpioDataRegs.GPACLEAR.bit.INLC_EPWM3B = 1;
+    EDIS;
+
+
+
+}
+
 void gpio_select(void) {
 
     EALLOW;
@@ -70,10 +106,10 @@ void gpio_select(void) {
     GpioCtrlRegs.GPADIR.bit.LED2 = 1;   // GPIO2 = output
     GpioCtrlRegs.GPADIR.bit.LED3 = 1;   // LED3 = output
 
-    GpioDataRegs.GPACLEAR.bit.LED0    = 1;
-    GpioDataRegs.GPACLEAR.bit.LED1    = 1;
-    GpioDataRegs.GPACLEAR.bit.LED2    = 1;
-    GpioDataRegs.GPACLEAR.bit.LED3    = 1;
+    GpioDataRegs.GPASET.bit.LED0    = 1;
+    GpioDataRegs.GPASET.bit.LED1    = 1;
+    GpioDataRegs.GPASET.bit.LED2    = 1;
+    GpioDataRegs.GPASET.bit.LED3    = 1;
     EDIS;
 
 }

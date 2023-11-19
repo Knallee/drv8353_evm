@@ -19,6 +19,7 @@
 
 void button_init(void);
 void gpio_select(void);
+void gpio_gate_drivers(void);
 void gpio_example(void);
 void led_rider(void);
 void ext_int_init(void);
