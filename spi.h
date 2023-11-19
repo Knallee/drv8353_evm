@@ -10,14 +10,11 @@
 
 #include "DSP28x_Project.h"
 
-#define CS_ENCODER  GPIO28
-
 void spia_io_init(void);
 void spia_int_init(void);
 void spia_init(void);
+void spio_io_disable(void);
 void spia_tx(uint16_t);
 uint16_t spia_rx(void);
-
-
 
 #endif /* SPI_H_ */

@@ -9,13 +9,9 @@
 #define GPIO_H_
 
 #include "DSP28x_Project.h"
+#include "drv8353_evm_pins.h"
 
-#define LED0    GPIO0
-#define LED1    GPIO1
-#define LED2    GPIO2
-#define LED3    GPIO3
 
-#define BUTTON  GPIO12
 
 #define DELAY   10
 #define MY_DEL  for (i = 0; i<0; i++)    __asm("     NOP");

@@ -12,7 +12,9 @@
 #include "gpio.h"
 #include "spi.h"
 
-__interrupt void hall_a_xint1_isr(void);
+__interrupt void hall_a_isr(void);
+__interrupt void hall_b_isr(void);
+__interrupt void hall_c_isr(void);
 
 void delay_loop(void);
 void error();
@@ -61,12 +63,17 @@ void main(void) {
 
 
     EALLOW;
-    PieVectTable.XINT1 = &hall_a_xint1_isr;     // Re-mapping the ISR to xint1_isr
+    PieVectTable.XINT1 = &hall_a_isr;     // Re-mapping the hall A effect ISR to hall_a_isr
+    PieVectTable.XINT2 = &hall_b_isr;     // Re-mapping the hall B effect ISR to hall_b_isr
+    PieVectTable.XINT3 = &hall_c_isr;     // Re-mapping the hall C effect ISR to hall_c_isr
     EDIS;
 
-    PieCtrlRegs.PIECTRL.bit.ENPIE = 1;          // Enable the PIE block
-    PieCtrlRegs.PIEIER1.bit.INTx4 = 1;          // Enable PIE Group 1 interrupt 4 ~ XINT1
-    IER |= M_INT1;                              // Enable CPU INT1
+    PieCtrlRegs.PIECTRL.bit.ENPIE   = 1;    // Enable the PIE block
+    PieCtrlRegs.PIEIER1.bit.INTx4   = 1;    // Enable PIE Group 1 interrupt 4 ~ XINT1
+    PieCtrlRegs.PIEIER1.bit.INTx5   = 1;    // Enable PIE Group 1 interrupt 5 ~ XINT2
+    PieCtrlRegs.PIEIER12.bit.INTx1  = 1;    // Enable PIE Group 12 interrupt 1 ~ XINT2
+    IER |= M_INT1;                          // Enable CPU INT1
+    IER |= M_INT12;                          // Enable CPU INT1
     EINT;
 
     button_init();
@@ -75,35 +82,68 @@ void main(void) {
 
     gpio_select();
 
+    GpioDataRegs.GPASET.bit.LED0    = 1;
+    GpioDataRegs.GPASET.bit.LED1    = 1;
+    GpioDataRegs.GPASET.bit.LED2    = 1;
+    GpioDataRegs.GPASET.bit.LED3    = 1;
+
     while(1) {
 
-        if (GpioDataRegs.GPADAT.bit.BUTTON) {
-//            GpioDataRegs.GPASET.bit.LED0    = 1;
-//            GpioDataRegs.GPASET.bit.LED1    = 1;
-//            GpioDataRegs.GPASET.bit.LED2    = 1;
-//            GpioDataRegs.GPASET.bit.LED3    = 1;
-            //gpio_select();
-            //spia_tx(tx_data);
-            led_rider();
-            //gpio_example();
-            DELAY_US(50000);
-            //spia_tx(tx_data);
-            //rx_data = spia_rx();
-            //tx_data++;
-        }
-//        else {
-//            GpioDataRegs.GPACLEAR.bit.LED0  = 1;
-//            GpioDataRegs.GPACLEAR.bit.LED1  = 1;
-//            GpioDataRegs.GPACLEAR.bit.LED2  = 1;
-//            GpioDataRegs.GPACLEAR.bit.LED3  = 1;
+//        if (GpioDataRegs.GPADAT.bit.BUTTON) {
+////            GpioDataRegs.GPASET.bit.LED0    = 1;
+////            GpioDataRegs.GPASET.bit.LED1    = 1;
+////            GpioDataRegs.GPASET.bit.LED2    = 1;
+////            GpioDataRegs.GPASET.bit.LED3    = 1;
+//            //gpio_select();
+//            //spia_tx(tx_data);S
+//            led_rider();
+//            //gpio_example();
+//            DELAY_US(50000);
+//            //spia_tx(tx_data);
+//            //rx_data = spia_rx();
+//            //tx_data++;
 //        }
+////        else {
+////            GpioDataRegs.GPACLEAR.bit.LED0  = 1;
+////            GpioDataRegs.GPACLEAR.bit.LED1  = 1;
+////            GpioDataRegs.GPACLEAR.bit.LED2  = 1;
+////            GpioDataRegs.GPACLEAR.bit.LED3  = 1;
+////        }
 
     }
 
 }
 
 
-__interrupt void hall_a_xint1_isr(void) {
+__interrupt void hall_a_isr(void) {
+
+    if (GpioDataRegs.GPADAT.bit.GPIO19) {
+        GpioDataRegs.GPACLEAR.bit.LED0  = 1;
+    } else {
+        GpioDataRegs.GPASET.bit.LED0    = 1;
+    }
 
     PieCtrlRegs.PIEACK.all = PIEACK_GROUP1; // Acknowledge this interrupt to get more from group 1
+}
+
+__interrupt void hall_b_isr(void) {
+
+    if (GpioDataRegs.GPADAT.bit.GPIO12) {
+        GpioDataRegs.GPACLEAR.bit.LED1    = 1;
+    } else {
+        GpioDataRegs.GPASET.bit.LED1    = 1;
+    }
+
+    PieCtrlRegs.PIEACK.all = PIEACK_GROUP1; // Acknowledge this interrupt to get more from group 1
+}
+
+__interrupt void hall_c_isr(void) {
+
+    if (GpioDataRegs.GPADAT.bit.GPIO6) {
+        GpioDataRegs.GPACLEAR.bit.LED2    = 1;
+    } else {
+        GpioDataRegs.GPASET.bit.LED2    = 1;
+    }
+
+    PieCtrlRegs.PIEACK.all = PIEACK_GROUP12; // Acknowledge this interrupt to get more from group 1
 }

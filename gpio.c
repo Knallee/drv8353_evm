@@ -15,14 +15,39 @@ void button_init(void) {
 void ext_int_init(void) {
 
     EALLOW;
+    GpioCtrlRegs.GPAPUD.bit.GPIO19          = 1;    // Pull up disable
+    GpioCtrlRegs.GPAMUX2.bit.GPIO19         = 0;    // GPIO
+    GpioCtrlRegs.GPADIR.bit.GPIO19          = 0;    // input
+    GpioCtrlRegs.GPAQSEL2.bit.GPIO19        = 0;    // XINT1 Synch to SYSCLKOUT only
+    GpioCtrlRegs.GPACTRL.bit.QUALPRD0       = 0x00; // Each sampling window is one period of SYSCLKOUT
+
+    GpioIntRegs.GPIOXINT1SEL.bit.GPIOSEL    = 19;   // XINT1 is GPIO12
+    XIntruptRegs.XINT1CR.bit.POLARITY       = 11;   // Falling edge interrupt
+    XIntruptRegs.XINT1CR.bit.ENABLE         = 1;    // Enable XINT1
+    EDIS;
+
+    EALLOW;
     GpioCtrlRegs.GPAPUD.bit.GPIO12          = 1;    // Pull up disable
     GpioCtrlRegs.GPAMUX1.bit.GPIO12         = 0;    // GPIO
     GpioCtrlRegs.GPADIR.bit.GPIO12          = 0;    // input
-    GpioCtrlRegs.GPAQSEL1.bit.GPIO12        = 0;    // XINT1 Synch to SYSCLKOUT only
-    GpioCtrlRegs.GPACTRL.bit.QUALPRD0       = 0x00; // Each sampling window is SYSCLKOUT
-    GpioIntRegs.GPIOXINT1SEL.bit.GPIOSEL    = 12;   // XINT1 is GPIO12
-    XIntruptRegs.XINT1CR.bit.POLARITY       = 11;   // Falling edge interrupt
-    XIntruptRegs.XINT1CR.bit.ENABLE         = 1;    // Enable XINT1
+    GpioCtrlRegs.GPAQSEL1.bit.GPIO12        = 0;    // XINT2 Synch to SYSCLKOUT only
+    GpioCtrlRegs.GPACTRL.bit.QUALPRD0       = 0x00; // Each sampling window is one period of SYSCLKOUT
+
+    GpioIntRegs.GPIOXINT2SEL.bit.GPIOSEL    = 12;   // XINT1 is GPIO12
+    XIntruptRegs.XINT2CR.bit.POLARITY       = 11;   // Falling edge interrupt
+    XIntruptRegs.XINT2CR.bit.ENABLE         = 1;    // Enable XINT2
+    EDIS;
+
+    EALLOW;
+    GpioCtrlRegs.GPAPUD.bit.GPIO6          = 1;    // Pull up disable
+    GpioCtrlRegs.GPAMUX1.bit.GPIO6         = 0;    // GPIO
+    GpioCtrlRegs.GPADIR.bit.GPIO6          = 0;    // input
+    GpioCtrlRegs.GPAQSEL1.bit.GPIO6        = 0;    // XINT3 Synch to SYSCLKOUT only
+    GpioCtrlRegs.GPACTRL.bit.QUALPRD0      = 0x00; // Each sampling window is one period of SYSCLKOUT
+
+    GpioIntRegs.GPIOXINT3SEL.bit.GPIOSEL    = 6;   // XINT3 is GPIO12
+    XIntruptRegs.XINT3CR.bit.POLARITY       = 11;   // Falling edge interrupt
+    XIntruptRegs.XINT3CR.bit.ENABLE         = 1;    // Enable XINT3
     EDIS;
 
 }

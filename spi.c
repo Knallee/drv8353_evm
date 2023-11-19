@@ -8,6 +8,28 @@
 #include "spi.h"
 
 
+void spio_io_disable(){
+    GpioCtrlRegs.GPAPUD.bit.GPIO16 = 0;   // Enable pull-up on GPIO16 (SPISIMOA)
+    GpioCtrlRegs.GPAPUD.bit.GPIO17 = 0;   // Enable pull-up on GPIO17 (SPISOMIA)
+    GpioCtrlRegs.GPAPUD.bit.GPIO18 = 0;   // Enable pull-up on GPIO18 (SPICLKA)
+    GpioCtrlRegs.GPAPUD.bit.GPIO19 = 0;   // Enable pull-up on GPIO19 (SPISTEA)
+
+    GpioCtrlRegs.GPAQSEL2.bit.GPIO16 = 3; // Asynch input GPIO16
+    GpioCtrlRegs.GPAQSEL2.bit.GPIO17 = 3; // Asynch input GPIO17
+    GpioCtrlRegs.GPAQSEL2.bit.GPIO18 = 3; // Asynch input GPIO18
+    GpioCtrlRegs.GPAQSEL2.bit.GPIO19 = 3; // Asynch input GPIO19
+
+    GpioCtrlRegs.GPAMUX2.bit.GPIO16 = 0; // Configure GPIO16 as GPIO
+    GpioCtrlRegs.GPAMUX2.bit.GPIO17 = 0; // Configure GPIO17 as GPIO
+    GpioCtrlRegs.GPAMUX2.bit.GPIO18 = 0; // Configure GPIO18 as GPIO
+    GpioCtrlRegs.GPAMUX2.bit.GPIO19 = 0; // Configure GPIO19 as GPIO
+
+    GpioDataRegs.GPACLEAR.bit.GPIO16 = 1; // Configure GPIO16 as SPISIMOA,  MOSI
+    GpioDataRegs.GPACLEAR.bit.GPIO17 = 1; // Configure GPIO17 as SPISOMIA,  MISO
+    GpioDataRegs.GPACLEAR.bit.GPIO18 = 1; // Configure GPIO18 as SPICLKA,   SCLK
+    GpioDataRegs.GPACLEAR.bit.GPIO19 = 1; // Configure GPIO19 as SPISTEA,   CS
+}
+
 void spia_io_init() {
 
     EALLOW;
